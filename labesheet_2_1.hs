@@ -40,4 +40,4 @@ factorsFrom m n | n >= m           = [n]
                 | otherwise        = factorsm (m+1) n
 
 primeFactors :: Int -> [Int]
-primeFactors n = factorsFrom 2 n
+primeFactors n = factorsFrom 2

@@ -25,9 +25,9 @@ pretty = f 0
 ------------------------- Assignment 1
 
 -- Takes a whole number and returns a term
-numeral :: Int -> Term
 -- Build the fixed wrapper lamba f containing lambda x
 -- and the body depending on the input num
+numeral :: Int -> Term
 numeral i = Lambda "f" (Lambda "x" (body i))
   where
     body 0 = Variable "x" -- base case is 0
@@ -46,21 +46,32 @@ merge (x : xs) (y : ys)
 ------------------------- Assignment 2
 
 -- No input executed with take or !!
-variables :: [Var]
 -- Infinite list of variable names: a..z, then a1..z1, then a2..z2, etc
 -- s is the suffix: "" first, then "1", "2", "3", ... (infinite)
 -- For each suffix, c runs through every letter 'a'..'z',
 -- and [c] ++ s makes the name (e.g. "b" ++ "1" = "b1").
+variables :: [Var]
 variables = [[c] ++ s | s <- "" : map show [1 ..], c <- ['a' .. 'z']]
 
+-- Keep every x from xs unless it is in ys
 filterVariables :: [Var] -> [Var] -> [Var]
 filterVariables xs ys = [x | x <- xs, not (elem x ys)]
 
+-- Returns the first variable name that is not in the list `taken`
+-- It filters the endless list `variables` to remove every taken variable
+-- then picks the first one that's left
 fresh :: [Var] -> Var
-fresh = undefined
+fresh taken = (filterVariables variables (taken)) !! 0
 
+-- Finds every variable name inside a Term and returns them as a sorted list
+-- with no repeats. A Variable gives just it's name
+-- A Lambda gives its name plus the names inside it
+-- An Apply gives the names from both of its parts
+-- merge helper above joins two lists together in order removing duplicates.
 used :: Term -> [Var]
-used = undefined
+used (Variable x) = [x]
+used (Lambda x m) = merge [x] (used m)
+used (Apply n m) = merge (used n) (used m)
 
 ------------------------- Assignment 3
 

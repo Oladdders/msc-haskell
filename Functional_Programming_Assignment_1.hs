@@ -75,10 +75,15 @@ used (Apply n m) = merge (used n) (used m)
 
 ------------------------- Assignment 3
 
+-- Find and replace the variable x to y throughout a Term
+-- Variable: if its name is x, change it to y, otherwise leave it
+-- Apply: rename inside both parts
+-- Lambda: if its own name is x, leave it unchanged, because that x is a bound
+-- variable otherwise keep the name and rename inside the body
 rename :: Var -> Var -> Term -> Term
-rename x y (Variable z) = undefined
-rename x y (Lambda z n) = undefined
-rename x y (Apply n m) = undefined
+rename x y (Variable z) = if z == x then Variable y else Variable z
+rename x y (Lambda z n) = if z == x then Lambda z n else Lambda z (rename x y n)
+rename x y (Apply n m) = Apply (rename x y n) (rename x y m)
 
 substitute :: Var -> Term -> Term -> Term
 substitute = undefined

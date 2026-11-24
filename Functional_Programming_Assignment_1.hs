@@ -100,8 +100,19 @@ substitute x n (Apply m1 m2) = Apply (substitute x n m1) (substitute x n m2)
 
 ------------------------- Assignment 4
 
+-- Return all terms reachable by one Beta step
+-- Redex: substitute x input body and use Apply on further redexes in the body
+-- Variable: Nothing to reduce
+-- Lambda: Look for beta reductions in body and put Lambda back
+-- Apply: Not a redex but look for steps in left and right part.
 beta :: Term -> [Term]
-beta = undefined
+beta (Apply (Lambda x body) input) =
+  [substitute x input body]
+    ++ [Apply (Lambda x b) input | b <- beta body]
+    ++ [Apply (Lambda x body) i | i <- beta input]
+beta (Variable x) = []
+beta (Lambda x body) = [Lambda x b | b <- beta body]
+beta (Apply m n) = [Apply m2 n | m2 <- beta m] ++ [Apply m n2 | n2 <- beta n]
 
 normalize :: Term -> [Term]
 normalize = undefined

@@ -1,3 +1,8 @@
+-- AI use declaration: I used GitHub Copilot (model: Claude Sonnet 5.5, Anthropic,
+-- model ID claude-sonnet-5.5) as a tutor between 22 and 24 Nov 2026. It explained
+-- concepts, suggested step-by-step approaches, and in some places gave example
+-- code, which I then typed in, tested in ghci, and commented myself.
+
 -- Var means String so variable name like "x" is text
 type Var = String
 

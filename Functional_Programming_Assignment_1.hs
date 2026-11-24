@@ -85,8 +85,18 @@ rename x y (Variable z) = if z == x then Variable y else Variable z
 rename x y (Lambda z n) = if z == x then Lambda z n else Lambda z (rename x y n)
 rename x y (Apply n m) = Apply (rename x y n) (rename x y m)
 
+-- Replaces the name x with the Term n throughout a Term, avoiding variable capture
+-- Variable: swap in n if it's x
+-- Apply: substitute in both parts
+-- Lambda: if its own bound name is x leave it unchanged otherwise rename its
+-- bound name to a fresh z first, so n's variables can't be accidentally captured
+-- then substitute inside the body
 substitute :: Var -> Term -> Term -> Term
-substitute = undefined
+substitute x n (Variable y) = if y == x then n else Variable y
+substitute x n (Lambda y m) = if y == x then Lambda y m else Lambda z (substitute x n (rename y z m))
+  where
+    z = fresh (used m ++ used n ++ [x])
+substitute x n (Apply m1 m2) = Apply (substitute x n m1) (substitute x n m2)
 
 ------------------------- Assignment 4
 

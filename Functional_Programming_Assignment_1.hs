@@ -120,10 +120,10 @@ beta (Lambda x body) = [Lambda x b | b <- beta body]
 beta (Apply m n) = [Apply m2 n | m2 <- beta m] ++ [Apply m n2 | n2 <- beta n]
 
 normalize :: Term -> [Term]
-normalize = undefined
+normalize t = if null (beta t) then [t] else t : normalize (head (beta t))
 
 normal :: Term -> Term
-normal = undefined
+normal t = last (normalize t)
 
 -------------------------
 
